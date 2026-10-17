@@ -24,6 +24,10 @@ RUN mkdir -p /app/logs && chown app /app/logs
 USER app
 
 ENV ASPNETCORE_ENVIRONMENT=Production
+# בתוכנית החינמית של Render (512MB) ה-runtime קרס לפעמים בעלייה עם exit 139 (segfault).
+# W^X מכובה כי הוא גורם לקריסות כאלה בסביבות מוגבלות, ו-Workstation GC צורך פחות זיכרון מ-Server GC.
+ENV DOTNET_EnableWriteXorExecute=0 \
+    DOTNET_gcServer=0
 EXPOSE 8080
 
 # Render מעביר את הפורט במשתנה PORT. בלעדיו: 8080
