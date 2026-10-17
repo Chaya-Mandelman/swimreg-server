@@ -1,0 +1,27 @@
+# Render Blueprint: יוצר בלחיצה אחת את בסיס הנתונים ואת השרת.
+# ב-Render: New → Blueprint → בוחרים את ה-repository.
+databases:
+  - name: swimreg-db
+    databaseName: swimreg
+    user: swimreg
+    plan: free
+    region: frankfurt
+
+services:
+  - type: web
+    name: swimreg-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./src/SwimReg.API/Dockerfile
+    dockerContext: .
+    healthCheckPath: /swagger/index.html
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: swimreg-db
+          property: connectionString
+      - key: Jwt__Key
+        generateValue: true
+      - key: Cors__AllowedOrigins__0
+        sync: false
