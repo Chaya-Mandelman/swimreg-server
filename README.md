@@ -177,13 +177,13 @@ Host=HOST;Port=PORT;Database=DATABASE;Username=USER;Password=PASSWORD;SSL Mode=R
 
 ## 8. כתובות הפריסה
 
-- כתובת השרת: `https://__________.onrender.com`
-- Swagger: `https://__________.onrender.com/swagger`
+- כתובת השרת: `https://swimreg-api.onrender.com`
+- Swagger: `https://swimreg-api.onrender.com/swagger`
 - כתובת הלקוח: `https://__________`
 
 ## 9. הלקוח
 
-- Repository של הלקוח: `https://github.com/<user>/<client-repo>`
+- Repository של הלקוח: `https://github.com/Chaya-Mandelman/swimreg-client`
 
 ---
 

@@ -21,7 +21,8 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<UserResponseDto>> Register([FromBody] RegisterRequestDto dto, CancellationToken ct)
     {
         var user = await _auth.RegisterAsync(dto, ct);
-        return StatusCode(StatusCodes.Status201Created, user);
+        // 201 + Location שמצביע על המשתמש החדש (GET /api/users/{id})
+        return CreatedAtAction(nameof(UsersController.GetById), "Users", new { id = user.Id }, user);
     }
 
     [HttpPost("login")]

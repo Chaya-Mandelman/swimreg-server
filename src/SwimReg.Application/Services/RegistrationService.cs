@@ -35,6 +35,10 @@ public class RegistrationService : IRegistrationService
         var course = await _courses.GetForUpdateAsync(courseId, ct)
             ?? throw new NotFoundException($"קורס {courseId} לא נמצא");
 
+        // Debug: עוזר לראות בפיתוח מה כל בקשה "ראתה" לפני השמירה (ה-Version הוא ה-xmin שייבדק ב-UPDATE)
+        _logger.LogDebug("Loaded course {CourseId} for registration: {Current}/{Max}, version {Version}",
+            courseId, course.CurrentCount, course.MaxParticipants, course.Version);
+
         // 2. בדיקת מכסה
         if (course.CurrentCount >= course.MaxParticipants)
         {
@@ -45,7 +49,10 @@ public class RegistrationService : IRegistrationService
 
         // 3. הרשמה כפולה
         if (await _registrations.ExistsAsync(userId, courseId, ct))
+        {
+            _logger.LogDebug("Registration rejected: user {UserId} is already registered to course {CourseId}", userId, courseId);
             throw new ConflictException("כבר נרשמת לקורס הזה");
+        }
 
         // 4. עדכון המכסה והוספת ההרשמה
         course.CurrentCount++;
