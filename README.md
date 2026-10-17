@@ -104,8 +104,9 @@ SwimReg.API  ──►  SwimReg.Infrastructure  ──►  SwimReg.Application  
 
 | Method | Path | הרשאה | תשובות |
 |---|---|---|---|
-| POST | `/api/auth/register` | פתוח | 201 / 400 / 409 |
+| POST | `/api/auth/register` | פתוח | 201 + Location / 400 / 409 |
 | POST | `/api/auth/login` | פתוח | 200 / 400 / 401 |
+| GET | `/api/users/{id}` | המשתמש עצמו או Admin | 200 / 403 / 404 |
 | GET | `/api/courses?level=&poolId=&sortBy=&page=&pageSize=` | מחובר | 200 / 400 |
 | GET | `/api/courses/{id}` | מחובר | 200 / 404 |
 | POST | `/api/courses` | Admin | 201 + Location / 400 |
@@ -127,6 +128,8 @@ SwimReg.API  ──►  SwimReg.Infrastructure  ──►  SwimReg.Application  
 - 401: token חסר, לא תקין או שפג תוקפו. 403: מחובר בלי הרשאה.
 - כל שגיאה מוחזרת באותו מבנה: `{ "statusCode", "message", "correlationId", "errors"? }`.
   המזהה חוזר גם ב-header בשם `X-Correlation-Id`.
+- רמות לוג: `Error` רק לשגיאת שרת (500), `Warning` לחריגה עסקית שטופלה (400/403/404/409, כולל התנגשות על מקום),
+  `Information` לזרימה רגילה ולכל בקשה, ו-`Debug` (רק ב-Development) לפרטי הקורס שנטען לפני הרשמה.
 
 > Swagger פעיל ב-Production לצורך הדגמה בפרויקט לימודי בלבד. במערכת אמיתית מכבים אותו או מגנים עליו.
 > (ההגדרה: `Swagger:Enabled` ב-`appsettings.json`.)
