@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,10 +41,25 @@ public static class DependencyInjection
     // אם הגיעה כתובת כזו, ממירים אותה לפורמט key=value. כל פורמט אחר מוחזר כמו שהוא.
     private static string NormalizeConnectionString(string value)
     {
-        if (!value.StartsWith("postgres://") && !value.StartsWith("postgresql://"))
-            return value;
+        // הדבקה בדשבורד מוסיפה לפעמים רווחים או מרכאות מסביב, ו-Npgsql נכשל עליהם כבר בתו הראשון
+        value = value.Trim().Trim('"', '\'').Trim();
 
-        var uri = new Uri(value);
+        // הכתובת יכולה להגיע גם בתוך טקסט נוסף, למשל "psql postgresql://..." שהועתק משדה PSQL Command
+        var match = Regex.Match(value, @"postgres(ql)?://[^\s""']+");
+        if (!match.Success)
+        {
+            // פורמט key=value: בודקים כאן כדי שהשגיאה תסביר מה לא בסדר, בלי לחשוף את הסיסמה
+            try { _ = new Npgsql.NpgsqlConnectionStringBuilder(value); }
+            catch (ArgumentException)
+            {
+                throw new InvalidOperationException(
+                    $"Connection string 'DefaultConnection' (length {value.Length}) is neither a postgres:// URL " +
+                    "nor Host=...;Database=...;Username=...;Password=... . On Render, paste the Internal Database URL.");
+            }
+            return value;
+        }
+
+        var uri = new Uri(match.Value);
         var userInfo = uri.UserInfo.Split(':', 2);
         var builder = new Npgsql.NpgsqlConnectionStringBuilder
         {
