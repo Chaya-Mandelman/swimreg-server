@@ -182,7 +182,7 @@ Host=HOST;Port=PORT;Database=DATABASE;Username=USER;Password=PASSWORD;SSL Mode=R
 
 - כתובת השרת: `https://swimreg-api.onrender.com`
 - Swagger: `https://swimreg-api.onrender.com/swagger`
-- כתובת הלקוח: `https://__________`
+- כתובת הלקוח: `https://swimreg-client.onrender.com`
 
 ## 9. הלקוח
 
