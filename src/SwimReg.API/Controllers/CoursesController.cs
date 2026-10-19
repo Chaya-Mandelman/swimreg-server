@@ -11,6 +11,7 @@ namespace SwimReg.API.Controllers;
 [ApiController]
 [Route("api/courses")]
 [Authorize]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
 public class CoursesController : ControllerBase
 {
     private readonly ICourseService _courses;
@@ -19,6 +20,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(PagedResult<CourseResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResult<CourseResponseDto>>> GetAll([FromQuery] CourseQueryParameters query, CancellationToken ct) =>
         Ok(await _courses.GetPagedAsync(query, ct));
 
@@ -30,6 +32,7 @@ public class CoursesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(CourseResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CourseResponseDto>> Create([FromBody] CourseRequestDto dto, CancellationToken ct)
@@ -40,6 +43,7 @@ public class CoursesController : ControllerBase
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -52,6 +56,7 @@ public class CoursesController : ControllerBase
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]

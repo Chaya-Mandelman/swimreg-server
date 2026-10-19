@@ -10,6 +10,7 @@ namespace SwimReg.API.Controllers;
 [ApiController]
 [Route("api/pools")]
 [Authorize]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
 public class PoolsController : ControllerBase
 {
     private readonly IPoolService _pools;
@@ -29,6 +30,7 @@ public class PoolsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(PoolResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PoolResponseDto>> Create([FromBody] PoolRequestDto dto, CancellationToken ct)
@@ -39,7 +41,9 @@ public class PoolsController : ControllerBase
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PoolRequestDto dto, CancellationToken ct)
     {
@@ -49,6 +53,7 @@ public class PoolsController : ControllerBase
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]

@@ -50,7 +50,7 @@ public class RegistrationService : IRegistrationService
         // 3. הרשמה כפולה
         if (await _registrations.ExistsAsync(userId, courseId, ct))
         {
-            _logger.LogDebug("Registration rejected: user {UserId} is already registered to course {CourseId}", userId, courseId);
+            _logger.LogWarning("Registration rejected: user {UserId} is already registered to course {CourseId}", userId, courseId);
             throw new ConflictException("כבר נרשמת לקורס הזה");
         }
 

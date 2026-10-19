@@ -11,6 +11,7 @@ namespace SwimReg.API.Controllers;
 
 [ApiController]
 [Route("api/instructors")]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
 public class InstructorsController : ControllerBase
 {
     private readonly IRegistrationService _registrations;
@@ -25,6 +26,7 @@ public class InstructorsController : ControllerBase
     // רשימת המדריכים, לבחירת מדריך בטופס הקורס
     [HttpGet]
     [Authorize(Roles = nameof(Role.Admin))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(IReadOnlyList<InstructorResponseDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<InstructorResponseDto>>> GetAll(CancellationToken ct) =>
         Ok(await _users.GetInstructorsAsync(ct));
@@ -32,8 +34,8 @@ public class InstructorsController : ControllerBase
     // מדריך רק עם ה-id שלו (אחרת 403). הבדיקה ב-Service
     [HttpGet("{id:int}/students")]
     [Authorize(Roles = $"{nameof(Role.Instructor)},{nameof(Role.Admin)}")]
-    [ProducesResponseType(typeof(IReadOnlyList<InstructorStudentDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(IReadOnlyList<InstructorStudentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<InstructorStudentDto>>> GetStudents([FromRoute] int id, CancellationToken ct) =>
         Ok(await _registrations.GetStudentsForInstructorAsync(id, User.GetUserId(), User.GetRole(), ct));
 }

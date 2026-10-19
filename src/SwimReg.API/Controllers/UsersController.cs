@@ -10,6 +10,7 @@ namespace SwimReg.API.Controllers;
 [ApiController]
 [Route("api/users")]
 [Authorize]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _users;

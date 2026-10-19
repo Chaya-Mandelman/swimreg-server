@@ -12,6 +12,7 @@ namespace SwimReg.API.Controllers;
 [ApiController]
 [Route("api/registrations")]
 [Authorize]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
 public class RegistrationsController : ControllerBase
 {
     private readonly IRegistrationService _registrations;
@@ -21,7 +22,9 @@ public class RegistrationsController : ControllerBase
     // ה-UserId נלקח מה-token, אף פעם לא מהגוף של הבקשה
     [HttpPost]
     [Authorize(Roles = nameof(Role.Student))]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(RegistrationResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<RegistrationResponseDto>> Create([FromBody] CreateRegistrationDto dto, CancellationToken ct)
@@ -32,7 +35,9 @@ public class RegistrationsController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = $"{nameof(Role.Student)},{nameof(Role.Admin)}")]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(PagedResult<RegistrationResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResult<RegistrationResponseDto>>> GetAll([FromQuery] RegistrationQueryParameters query, CancellationToken ct) =>
         Ok(await _registrations.GetPagedAsync(User.GetUserId(), User.GetRole(), query, ct));
 
